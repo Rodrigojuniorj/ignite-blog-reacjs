@@ -64,7 +64,7 @@ export default function Post({ post }: PostProps): JSX.Element {
   return (
     <>
       <Head>
-        <title>Post | Lorem ipsum</title>
+        <title>Post | {post.data.title}</title>
       </Head>
 
       <main>

@@ -71,42 +71,50 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         <title>Posts | React</title>
       </Head>
 
-      <main>
+      {posts[0] ? (
+        <main>
+          <div className={styles.posts}>
+            {posts.map(post => (
+              <Link key={post.uid} href={`/post/${post.uid}`}>
+                <a>
+                  <strong>{post.data.title}</strong>
+                  <p>{post.data.subtitle}</p>
+                  <div className={styles.postFooter}>
+                    <time>
+                      <AiOutlineCalendar size={20} />
+                      {format(
+                        new Date(post.first_publication_date),
+                        'dd MMM yyyy',
+                        {
+                          locale: ptBR,
+                        }
+                      )}
+                    </time>
+                    <span>
+                      <AiOutlineUser size={20} /> {post.data.author}
+                    </span>
+                  </div>
+                </a>
+              </Link>
+            ))}
+            {nextPage && (
+              <button
+                type="button"
+                className={styles.loadMorePosts}
+                onClick={handleMorePosts}
+              >
+                Carregar mais posts
+              </button>
+            )}
+          </div>
+        </main>
+      ) : (
         <div className={styles.posts}>
-          {posts.map(post => (
-            <Link key={post.uid} href={`/post/${post.uid}`}>
-              <a>
-                <strong>{post.data.title}</strong>
-                <p>{post.data.subtitle}</p>
-                <div className={styles.postFooter}>
-                  <time>
-                    <AiOutlineCalendar size={20} />
-                    {format(
-                      new Date(post.first_publication_date),
-                      'dd MMM yyyy',
-                      {
-                        locale: ptBR,
-                      }
-                    )}
-                  </time>
-                  <span>
-                    <AiOutlineUser size={20} /> {post.data.author}
-                  </span>
-                </div>
-              </a>
-            </Link>
-          ))}
-          {nextPage && (
-            <button
-              type="button"
-              className={styles.loadMorePosts}
-              onClick={handleMorePosts}
-            >
-              Carregar mais posts
-            </button>
-          )}
+          <h1>
+            <strong>Nenhum Post no momento</strong>
+          </h1>
         </div>
-      </main>
+      )}
     </>
   );
 }
