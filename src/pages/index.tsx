@@ -81,7 +81,13 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
                 <div className={styles.postFooter}>
                   <time>
                     <AiOutlineCalendar size={20} />
-                    {post.first_publication_date}
+                    {format(
+                      new Date(post.first_publication_date),
+                      'dd MMM yyyy',
+                      {
+                        locale: ptBR,
+                      }
+                    )}
                   </time>
                   <span>
                     <AiOutlineUser size={20} /> {post.data.author}
@@ -111,20 +117,12 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 10,
   });
 
-  const nextPost = postsResponse.next_page
-    ? `${postsResponse.next_page}&access_token=${process.env.PRISMIC_ACCESS_TOKEN}`
-    : null;
+  const nextPost = postsResponse.next_page;
 
   const posts = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-      first_publication_date: format(
-        new Date(post.first_publication_date),
-        'dd MMM yyyy',
-        {
-          locale: ptBR,
-        }
-      ),
+      first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,

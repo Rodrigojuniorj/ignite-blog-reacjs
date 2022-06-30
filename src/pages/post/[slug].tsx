@@ -42,12 +42,11 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps): JSX.Element {
-  const router = useRouter();
-  if (router.isFallback) {
-    return <span>Carregando...</span>;
+  const { isFallback } = useRouter();
+  if (isFallback) {
+    return <p>Carregando...</p>;
   }
 
-  const wordsPerMinute = 200;
   const totalWords = Math.round(
     post.data.content.reduce(
       (acc, contentItem) =>
@@ -60,7 +59,7 @@ export default function Post({ post }: PostProps): JSX.Element {
       0
     )
   );
-  const totalMinutes = Math.ceil(totalWords / wordsPerMinute);
+  const totalMinutes = Math.ceil(totalWords / 200);
 
   return (
     <>
@@ -79,7 +78,9 @@ export default function Post({ post }: PostProps): JSX.Element {
           <div className={styles.postFooter}>
             <time>
               <AiOutlineCalendar size={20} />
-              {post.first_publication_date}
+              {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
+                locale: ptBR,
+              })}
             </time>
             <span>
               <AiOutlineUser size={20} /> {post.data.author}
@@ -110,12 +111,20 @@ export default function Post({ post }: PostProps): JSX.Element {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient({});
-  const posts = await prismic.getByType('posts');
+  const posts = await prismic.getByType('posts', {
+    lang: 'pt-BR',
+  });
+
+  const paths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
 
   return {
-    paths: posts.results.map(post => ({
-      params: { slug: post.id },
-    })),
+    paths,
     fallback: true,
   };
 };
@@ -137,15 +146,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const post = {
     uid: response.uid,
-    first_publication_date: format(
-      new Date(response.first_publication_date),
-      'dd MMM yyyy',
-      {
-        locale: ptBR,
-      }
-    ),
+    first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
+      subtitle: response.data.subtitle,
       banner: {
         url: response.data.banner.url,
       },
