@@ -86,7 +86,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               <AiOutlineUser size={20} /> {post.data.author}
             </span>
             <span>
-              <AiOutlineClockCircle size={20} /> {`${totalMinutes} min`}
+              <AiOutlineClockCircle size={20} /> {`Leitura ${totalMinutes} min`}
             </span>
           </div>
           {post.data.content.map(content => (
