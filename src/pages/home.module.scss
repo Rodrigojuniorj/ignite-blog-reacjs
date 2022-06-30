@@ -2,8 +2,9 @@
   margin: 5rem auto 0;
   text-align: justify;
   width: 100%;
-  max-width: 43.75rem;
-  
+  max-width: calc(43.75rem + 5%);
+  padding: 0 2%;
+
   a {
     display: block;
 
