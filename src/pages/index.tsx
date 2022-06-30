@@ -117,7 +117,9 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 10,
   });
 
-  const nextPost = postsResponse.next_page;
+  const nextPost = postsResponse.next_page
+    ? `${postsResponse.next_page}&access_token=${process.env.PRISMIC_ACCESS_TOKEN}`
+    : null;
 
   const posts = postsResponse.results.map(post => {
     return {
